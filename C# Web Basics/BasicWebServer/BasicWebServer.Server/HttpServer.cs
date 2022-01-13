@@ -14,12 +14,12 @@ namespace BasicWebServer.Server
         private readonly int port;
         private readonly TcpListener serverListener;
 
-        public HttpServer(string ipAddress, int port)
+        public HttpServer(string _ipAddress, int _port)
         {
-            this.ipAddress = IPAddress.Parse(ipAddress);
-            this.port = port;
+            ipAddress = IPAddress.Parse(_ipAddress);
+            port = _port;
 
-            serverListener = new TcpListener(this.ipAddress, this.port);
+            serverListener = new TcpListener(ipAddress, port);
         }
 
         public void Start()
@@ -41,7 +41,7 @@ namespace BasicWebServer.Server
 
         private void WriteResponse(NetworkStream stream, string message)
         {
-            var contentLength = Encoding.UTF8.GetBytes(message);
+            int contentLength = Encoding.UTF8.GetByteCount(message);
 
             string response = $@"HTTP/1.1 200 OK
 Content-Type: text/plain; charset=UTF-8
@@ -51,7 +51,7 @@ Content-Length: {contentLength}
 
             var responseBytes = Encoding.UTF8.GetBytes(response);
 
-            stream.Write(responseBytes);
+            stream.Write(responseBytes, 0, responseBytes.Length);
         }
     }
 }
