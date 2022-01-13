@@ -8,13 +8,12 @@ int port = 8080;
 TcpListener listener = new TcpListener(ipAddress, port);
 listener.Start();
 
+Console.WriteLine($"Server started on port {port}");
+Console.WriteLine("Listening for requests...");
+
 while (true)
 {
     var connection = listener.AcceptTcpClient();
-
-    Console.WriteLine($"Server started on port {port}");
-    Console.WriteLine("Listening for requests...");
-
     var networkStream = connection.GetStream();
 
     string content = "Hello from the server!";
