@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace BasicWebServer.Server.HTTP
 {
-    internal class Response
+    public class Response
     {
+        public Response(StatusCode code)
+        {
+            StatusCode = code;
+            Headers.Add("Server", "My Web Server");
+            Headers.Add("Date", $"{DateTime.UtcNow:r}");
+        }
+
+        public StatusCode StatusCode { get; init; }
+
+        public HeaderCollection Headers { get; set; }= new HeaderCollection();
+
+        public string Body { get; set; }
     }
 }

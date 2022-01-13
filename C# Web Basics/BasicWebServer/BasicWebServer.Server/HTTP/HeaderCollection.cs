@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace BasicWebServer.Server.HTTP
 {
-    internal class HeaderCollection
+    public class HeaderCollection
     {
+        private readonly Dictionary<string, Header> headers;
+
+        public HeaderCollection() => headers = new Dictionary<string, Header>();
+
+        public int Count => headers.Count;
+
+        public void Add(string name, string value)
+        {
+            Header header = new Header(name, value);
+            headers.Add(name, header);
+        }
     }
 }
