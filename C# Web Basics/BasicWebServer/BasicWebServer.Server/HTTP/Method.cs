@@ -8,9 +8,9 @@ namespace BasicWebServer.Server.HTTP
 {
     public enum Method
     {
-        Get = 1,
-        Post = 2,
-        Put = 3,
-        Delete = 4
+        GET = 1,
+        POST = 2,
+        PUT = 3,
+        DELETE = 4
     }
 }

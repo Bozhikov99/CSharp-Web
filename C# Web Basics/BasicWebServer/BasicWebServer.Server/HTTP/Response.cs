@@ -20,5 +20,25 @@ namespace BasicWebServer.Server.HTTP
         public HeaderCollection Headers { get; set; } = new HeaderCollection();
 
         public string Body { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"HTTP/1.1 {(int)StatusCode} {StatusCode}");
+
+            foreach (var header in Headers)
+            {
+                stringBuilder.AppendLine(header.ToString());
+            }
+
+            stringBuilder.AppendLine();
+
+            if (!string.IsNullOrEmpty(Body))
+            {
+                stringBuilder.Append(Body);
+            }
+
+            return stringBuilder.ToString();
+        }
     }
 }
