@@ -15,11 +15,11 @@ namespace BasicWebServer.Server.HTTP
 
         public int Count => headers.Count;
 
-        public void Add(string name, string value)
-        {
-            Header header = new Header(name, value);
-            headers.Add(name, header);
-        }
+        public void Add(string name, string value) => headers[name] = new Header(name, value);
+
+        public bool Contains(string name) => headers.ContainsKey(name);
+
+        public string this[string name] => headers[name].Value;
 
         public IEnumerator<Header> GetEnumerator() => headers.Values.GetEnumerator();
 
