@@ -1,6 +1,8 @@
 ﻿using BasicWebServer.Server;
 using BasicWebServer.Server.HTTP;
 using BasicWebServer.Server.Responses;
+using System.Text;
+using System.Web;
 
 public class Startup
 {
@@ -14,7 +16,8 @@ public class Startup
         .MapGet("/Redirect", new RedirectResponse("https://softuni.org/"))
         .MapPost("/HTML", new TextResponse("", AddFormDataAction))
         .MapGet("/Content", new HtmlResponse(DownloadForm))
-         .MapPost("/Content", new TextFileResponse(FileName)))
+        .MapPost("/Content", new TextFileResponse(FileName))
+        .MapGet("/Cookies", new HtmlResponse("", AddCookiesAction)))
          .Start();
     }
     private const string HtmlForm = @"<form action='/HTML' method='POST'>
@@ -50,6 +53,42 @@ Age: <input type='text' name='Age'/>
             string html = await response.Content.ReadAsStringAsync();
 
             return html.Substring(0, 2000);
+        }
+    }
+
+    private static void AddCookiesAction(Request request, Response response)
+    {
+        bool requestHasCookies = request.Cookies.Any();
+        string bodyText = "";
+
+        if (requestHasCookies)
+        {
+            StringBuilder cookieText = new StringBuilder();
+            cookieText.AppendLine("<h1>Cookies</h1>");
+
+            cookieText.Append("<table border='1'><tr><th>Name</th><th>Value</th></tr>");
+
+            foreach (var cookie in request.Cookies)
+            {
+                cookieText.Append("<tr>");
+                cookieText.Append($"<td>{HttpUtility.HtmlEncode(cookie.Name)}</td>");
+                cookieText.Append($"<td>{HttpUtility.HtmlEncode(cookie.Value)}</td>");
+                cookieText.Append("</tr>");
+            }
+
+            cookieText.Append("</table>");
+
+            bodyText = cookieText.ToString();
+        }
+        else
+        {
+            bodyText = "<h1>Cookies set!</h1>";
+        }
+
+        if (!requestHasCookies)
+        {
+            response.Cookies.Add("My-Cookie", "My-Value");
+            response.Cookies.Add("My-Second-Cookie", "My-Second-Value");
         }
     }
 
