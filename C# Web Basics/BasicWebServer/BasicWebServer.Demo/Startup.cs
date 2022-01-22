@@ -58,7 +58,7 @@ Age: <input type='text' name='Age'/>
 
     private static void AddCookiesAction(Request request, Response response)
     {
-        bool requestHasCookies = request.Cookies.Any();
+        bool requestHasCookies = request.Cookies.Any(c => c.Name != Session.SessionCookieName);
         string bodyText = "";
 
         if (requestHasCookies)
