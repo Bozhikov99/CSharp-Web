@@ -1,6 +1,8 @@
-﻿using BasicWebServer.Server;
+﻿using BasicWebServer.Demo.Controllers;
+using BasicWebServer.Server;
 using BasicWebServer.Server.HTTP;
 using BasicWebServer.Server.Responses;
+using BasicWebServer.Server.Routing;
 using System.Text;
 using System.Web;
 
@@ -11,18 +13,18 @@ public class Startup
         //await DownloadSitesAsTextFile(FileName, new string[] { "https://judge.softuni.org/", "https://softuni.org/" });
 
         await new HttpServer(routes => routes
-        .MapGet("/", new TextResponse("Hello from the server!"))
-        .MapGet("/HTML", new HtmlResponse(HtmlForm))
-        .MapGet("/Redirect", new RedirectResponse("https://softuni.org/"))
-        .MapPost("/HTML", new TextResponse("", AddFormDataAction))
-        .MapGet("/Content", new HtmlResponse(DownloadForm))
-        .MapPost("/Content", new TextFileResponse(FileName))
-        .MapGet("/Cookies", new HtmlResponse("", AddCookiesAction))
-        .MapGet("/Session", new TextResponse("", DisplaySessionInfoAction))
-        .MapGet("/Login", new HtmlResponse(LoginForm))
-        .MapPost("/Login", new HtmlResponse("", LoginAction))
-        .MapGet("/Logout", new HtmlResponse("", LogoutAction))
-        .MapGet("/UserProfile", new HtmlResponse("", GetUserDataAction)))
+        .MapGet<HomeController>("/", c => c.Index())
+        .MapGet<HomeController>("/HTML", c => c.Html())
+        .MapGet<HomeController>("/Redirect", c => c.Redirect())
+        .MapPost<HomeController>("/HTML", c => c.HtmlFormPost())
+        .MapGet<HomeController>("/Content", c => c.Content())
+        .MapPost<HomeController>("/Content", c => c.DownloadContent()))
+        //.MapGet<HomeController>("/Cookies", c => c.Cookies())
+        //.MapGet<HomeController>("/Session", c => c.Session()))
+        //.MapGet<HomeController>("/Login", new HtmlResponse(LoginForm))
+        //.MapPost<HomeController>("/Login", new HtmlResponse("", LoginAction))
+        //.MapGet<HomeController>("/Logout", new HtmlResponse("", LogoutAction))
+        //.MapGet<HomeController>("/UserProfile", new HtmlResponse("", GetUserDataAction)))
          .Start();
     }
 
@@ -40,15 +42,7 @@ public class Startup
         }
     }
 
-    private const string HtmlForm = @"<form action='/HTML' method='POST'>
-Name: <input type='text' name='Name'/>
-Age: <input type='text' name='Age'/>
-<input type='submit' value='Save'>
-</form>";
 
-    private const string DownloadForm = @"<form action='/Content' method='POST'>
- <input type='submit' value='Download Sites Content' />
-</form>";
 
     private const string LoginForm = @"<form action='/Login' method='POST'>
    Username: <input type='text' name='Username'/>
@@ -63,29 +57,7 @@ Age: <input type='text' name='Age'/>
 
     private const string Password = "user123";
 
-    public static void AddFormDataAction(Request request, Response response)
-    {
-        response.Body = "";
-
-        foreach (var (key, value) in request.Form)
-        {
-            response.Body += $"{key} - {value}";
-            response.Body += Environment.NewLine;
-        }
-    }
-
-    private static async Task<string> DownloadWebSiteContent(string url)
-    {
-        HttpClient httpClient = new HttpClient();
-
-        using (httpClient)
-        {
-            var response = await httpClient.GetAsync(url);
-            string html = await response.Content.ReadAsStringAsync();
-
-            return html.Substring(0, 2000);
-        }
-    }
+    
 
     private static void AddCookiesAction(Request request, Response response)
     {
@@ -121,21 +93,7 @@ Age: <input type='text' name='Age'/>
         response.Body = bodyText;
     }
 
-    private static async Task DownloadSitesAsTextFile(string fileName, string[] urls)
-    {
-        List<Task<string>> downloads = new List<Task<string>>();
-
-        foreach (string url in urls)
-        {
-            downloads.Add(DownloadWebSiteContent(url));
-        }
-
-        var responses = await Task.WhenAll(downloads);
-
-        var responsesString = string.Join(Environment.NewLine + new string('-', 100), responses);
-
-        await File.WriteAllTextAsync(fileName, responsesString);
-    }
+    
 
     private static void DisplaySessionInfoAction(Request request, Response response)
     {

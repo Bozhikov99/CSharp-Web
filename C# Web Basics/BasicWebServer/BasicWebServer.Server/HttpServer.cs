@@ -22,6 +22,8 @@ namespace BasicWebServer.Server
             routingTableConfig(routingTable = new RoutingTable());
         }
 
+        
+
         public HttpServer(int port, Action<IRoutingTable> routingTable)
             : this("127.0.0.1", port, routingTable)
         {
