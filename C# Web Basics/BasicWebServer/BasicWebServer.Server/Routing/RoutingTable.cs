@@ -9,7 +9,7 @@ namespace BasicWebServer.Server.Routing
         private readonly Dictionary<Method, Dictionary<string, Response>> routes;
         public RoutingTable() => routes = new()
         {
-            [Method.GET] = new(),
+            [Method.GET] = new(StringComparer.InvariantCultureIgnoreCase),
             [Method.POST] = new(),
             [Method.PUT] = new(),
             [Method.DELETE] = new(),

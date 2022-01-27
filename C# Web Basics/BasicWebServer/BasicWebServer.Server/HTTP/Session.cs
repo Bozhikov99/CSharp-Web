@@ -10,7 +10,10 @@ namespace BasicWebServer.Server.HTTP
     public class Session
     {
         public const string SessionCookieName = "MyServerSID";
+
         public const string SessionCurrentDateKey = "CurrentDate";
+
+        public const string SessionUserKey = "AuthenticatedUserId";
 
         private Dictionary<string, string> data;
 
@@ -20,6 +23,8 @@ namespace BasicWebServer.Server.HTTP
             Id = id;
             data = new Dictionary<string, string>();
         }
+
+        public void Clear() => data.Clear();
 
         public string Id { get; init; }
 

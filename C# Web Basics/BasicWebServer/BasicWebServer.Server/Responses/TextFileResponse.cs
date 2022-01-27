@@ -22,7 +22,8 @@ namespace BasicWebServer.Server.Responses
         {
             if (File.Exists(FileName))
             {
-                Body = File.ReadAllTextAsync(FileName).Result;
+                Body = string.Empty;
+                FileContent = File.ReadAllBytes(FileName);
                 var fileBytesCount=new FileInfo(FileName).Length;
                 Headers.Add(Header.ContentLength, fileBytesCount.ToString());
 

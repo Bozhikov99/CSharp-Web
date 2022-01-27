@@ -1,12 +1,8 @@
 ﻿using BasicWebServer.Server.HTTP;
 using BasicWebServer.Server.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BasicWebServer.Server
 {
@@ -86,7 +82,15 @@ namespace BasicWebServer.Server
         private async Task WriteResponse(NetworkStream stream, Response response)
         {
             var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
+
+            if (response.FileContent != null)
+            {
+                responseBytes = responseBytes
+                    .Concat(response.FileContent)
+                    .ToArray();
+            }
             await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+
         }
 
         private async Task<string> ReadRequest(NetworkStream stream)
