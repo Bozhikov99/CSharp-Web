@@ -1,6 +1,7 @@
 ﻿using BasicWebServer.Server.Controllers;
 using BasicWebServer.Server.HTTP;
 using System.Text;
+using System.Web;
 
 namespace BasicWebServer.Demo.Controllers
 {
@@ -49,7 +50,7 @@ Age: <input type='text' name='Age'/>
 
 
         public HomeController(Request request)
-            : base(request)
+        : base(request)
         {
 
         }
@@ -66,6 +67,35 @@ Age: <input type='text' name='Age'/>
             return Text(formData);
         }
 
+        public Response Cookies()
+        {
+            if (request.Cookies.Any(c => c.Name != Server.HTTP.Session.SessionCookieName))
+            {
+                StringBuilder cookieText = new StringBuilder();
+                cookieText.AppendLine("<h1>Cookies</h1>");
+
+                cookieText.Append("<table border='1'><tr><th>Name</th><th>Value</th></tr>");
+
+                foreach (var cookie in request.Cookies)
+                {
+                    cookieText.Append("<tr>");
+                    cookieText.Append($"<td>{HttpUtility.HtmlEncode(cookie.Name)}</td>");
+                    cookieText.Append($"<td>{HttpUtility.HtmlEncode(cookie.Value)}</td>");
+                    cookieText.Append("</tr>");
+                }
+
+                cookieText.Append("</table>");
+
+                return Html(cookieText.ToString());
+            }
+
+            CookieCollection cookies = new CookieCollection();
+            cookies.Add("My-Cookie", "My-Value");
+            cookies.Add("My-Second-Cookie", "My-Second-Value");
+
+            return Html("<h1>Cookies set!</h1>", cookies);
+        }
+
         public Response DownloadContent()
         {
             DownloadSitesAsTextFile(FileName,
@@ -73,6 +103,23 @@ Age: <input type='text' name='Age'/>
                 .Wait();
 
             return File(FileName);
+        }
+
+        public Response Session()
+        {
+            string currentDateKey = "CurrentDate";
+
+            bool sessionExists = request.Session
+                .ContainsKey(currentDateKey);
+
+            if (sessionExists)
+            {
+                var currentDate = request.Session[currentDateKey];
+
+                return Text($"Stored date: {currentDate}");
+            }
+
+            return Text("Current date stored!");
         }
 
         public Response Index() => Text("Welcome to the server!");
