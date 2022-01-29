@@ -22,6 +22,9 @@ namespace BasicWebServer.Server.Responses
             string viewPath = Path.GetFullPath($"./Views/" +
                 $"{viewName.TrimStart(PathSeparator)}" +
                 $".cshtml");
+
+            var viewContent = File.ReadAllText(viewPath);
+            Body = viewContent;
         }
     }
 }
