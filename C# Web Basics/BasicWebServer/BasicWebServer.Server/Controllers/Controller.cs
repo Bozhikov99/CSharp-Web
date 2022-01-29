@@ -1,15 +1,10 @@
 ﻿using BasicWebServer.Server.HTTP;
 using BasicWebServer.Server.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BasicWebServer.Server.Controllers
 {
-    public class Controller
+    public abstract class Controller
     {
         protected Request request { get; private init; }
 
@@ -34,8 +29,12 @@ namespace BasicWebServer.Server.Controllers
             return response;
         }
 
+        protected Response View(object model, [CallerMemberName] string viewName = "")
+            => new ViewResponse(viewName, GetControllerName(), model);
+
         protected Response View([CallerMemberName] string viewName = "")
             => new ViewResponse(viewName, GetControllerName());
+
 
         private string GetControllerName()
             => GetType().Name
