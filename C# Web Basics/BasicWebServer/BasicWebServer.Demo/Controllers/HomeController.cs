@@ -98,9 +98,9 @@ Age: <input type='text' name='Age'/>
 
         public Response DownloadContent()
         {
-            DownloadSitesAsTextFile(FileName,
-                new string[] { "https://judge.softuni.org/", "https://softuni.org" })
-                .Wait();
+            //DownloadSitesAsTextFile(FileName,
+            //    new string[] { "https://judge.softuni.org/", "https://softuni.org" })
+            //    .Wait();
 
             return File(FileName);
         }
