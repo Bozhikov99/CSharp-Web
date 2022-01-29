@@ -10,8 +10,6 @@ public class Startup
 {
     public static async Task Main()
     {
-        //await DownloadSitesAsTextFile(FileName, new string[] { "https://judge.softuni.org/", "https://softuni.org/" });
-
         await new HttpServer(routes => routes
         .MapGet<HomeController>("/", c => c.Index())
         .MapGet<HomeController>("/HTML", c => c.Html())
@@ -27,5 +25,4 @@ public class Startup
         .MapGet<UsersController>("/UserProfile", c => c.GetUserDataAction()))
          .Start();
     }
-
 }
